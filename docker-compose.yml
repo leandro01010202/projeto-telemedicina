@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/vitalis
+      - DATABASE_URL=mysql+aiomysql://root:vitalis123@db:3306/vitalis
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=your-secret-key-change-in-production
       - DEBUG=true
@@ -19,17 +19,17 @@ services:
       - vitalis-network
 
   db:
-    image: postgres:16-alpine
+    image: mysql:8.0
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=vitalis
+      - MYSQL_ROOT_PASSWORD=vitalis123
+      - MYSQL_DATABASE=vitalis
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     ports:
-      - "5432:5432"
+      - "3306:3306"
     networks:
       - vitalis-network
+    command: --default-authentication-plugin=mysql_native_password
 
   redis:
     image: redis:7-alpine
@@ -38,20 +38,9 @@ services:
     networks:
       - vitalis-network
 
-  # Opcional: Servidor TURN para WebRTC
-  coturn:
-    image: coturn/coturn:latest
-    command: --lt-cred-mech --min-port=49152 --max-port=65535 --verbose
-    ports:
-      - "3478:3478"
-      - "3478:3478/udp"
-      - "49152-65535:49152-65535/udp"
-    networks:
-      - vitalis-network
-
 networks:
   vitalis-network:
     driver: bridge
 
 volumes:
-  postgres_data:
+  mysql_data:

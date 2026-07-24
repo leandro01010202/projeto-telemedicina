@@ -10,8 +10,8 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
-    # Database
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/vitalis"
+    # Database - MySQL
+    database_url: str = "mysql+aiomysql://root:password@localhost:3306/vitalis"
 
     # JWT
     secret_key: str = "changeme-in-production-use-strong-secret-key"
